@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-T">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>電漿表面處理應用探索</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Visualization & Content Choices:
+        - Table 1 (Plasma Types): Goal: Compare types. Viz: Grouped Bar Chart (Chart.js) for key comparable characteristics (precision, cost, temp capability). Interaction: Tooltips. Justification: Clear visual comparison of key differentiators.
+        - Table 2 (Processes): Goal: Overview of processes. Viz: Horizontal Bar Chart (Chart.js) for application breadth. Interaction: Tooltips for details. Justification: Quick understanding of process versatility.
+        - Table 3 (Industrial Applications): Goal: Show industry applications. Viz: Donut Chart (Chart.js) for application distribution by industry. Interaction: Click to show list of applications. Justification: Highlights key sectors and allows drill-down.
+        - Table 4 (Plasma vs. Traditional): Goal: Compare plasma to traditional. Viz: Radar Chart (Chart.js) for multi-faceted comparison (precision, temp, env. impact, flexibility). Interaction: Tooltips. Justification: Holistic comparison across multiple criteria.
+        - Textual Content: Presented in collapsible or tabbed sections within each main navigation item to manage information density, supported by introductory paragraphs for each section.
+        - Diagrams: Simple concepts (e.g., plasma sheath, etching types) will be represented using structured HTML/CSS with Tailwind and Unicode icons if appropriate, avoiding SVG/Mermaid.
+        - Library/Method: Chart.js for all charts, Vanilla JS for interactions, Tailwind CSS for styling.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { font-family: 'Inter', 'Noto Sans TC', sans-serif; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (max-width: 768px) { .chart-container { height: 300px; max-height: 350px;} }
+        .sidebar-link { display: block; padding: 0.75rem 1rem; margin-bottom: 0.5rem; border-radius: 0.375rem; transition: background-color 0.2s, color 0.2s; }
+        .sidebar-link.active, .sidebar-link:hover { background-color: #0284c7; color: white; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        h2 { border-bottom: 2px solid #0ea5e9; padding-bottom: 0.5rem; }
+        .tooltip { position: absolute; background-color: rgba(0,0,0,0.7); color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.875rem; pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 10; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+    <div>
+        <div class="w-full bg-yellow-100 text-yellow-900 text-center py-2 px-4 text-sm font-semibold shadow-md">
+            ⚠️ 100% AI生成，請謹慎服用
+        </div>
+        <div class="flex">
+
+
+    <aside class="w-64 bg-slate-100 p-4 space-y-2 fixed top-0 left-0 h-full overflow-y-auto shadow-lg md:block hidden">
+        <h1 class="text-2xl font-bold text-sky-700 mb-6 text-center">電漿技術導覽</h1>
+        <nav>
+            <a href="#overview" class="sidebar-link active">🌍 總覽</a>
+            <a href="#fundamentals" class="sidebar-link">💡 電漿基礎</a>
+            <a href="#processes" class="sidebar-link">🔬 處理製程</a>
+            <a href="#applications" class="sidebar-link">🏭 產業應用</a>
+            <a href="#comparison" class="sidebar-link">⚖️ 技術比較</a>
+            <a href="#future" class="sidebar-link">🚀 前瞻與發展</a>
+        </nav>
+    </aside>
+
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-slate-100 p-2 shadow-t-lg z-50">
+        <select id="mobile-nav" class="w-full p-2 border border-slate-300 rounded-md bg-white text-slate-700">
+            <option value="overview">🌍 總覽</option>
+            <option value="fundamentals">💡 電漿基礎</option>
+            <option value="processes">🔬 處理製程</option>
+            <option value="applications">🏭 產業應用</option>
+            <option value="comparison">⚖️ 技術比較</option>
+            <option value="future">🚀 前瞻與發展</option>
+        </select>
+    </div>
+
+    <main class="flex-1 md:ml-64 p-6 pb-16 md:pb-6">
+        <section id="overview" class="content-section active">
+            <h2 class="text-3xl font-bold text-sky-600 mb-6">🌍 電漿在表面處理上的應用：總覽</h2>
+            <p class="mb-4 text-lg leading-relaxed">
+                歡迎來到電漿表面處理技術的互動探索之旅。本應用程式旨在將複雜的科學報告轉化為易於理解和互動的內容。電漿，作為物質的第四態，因其獨特的物理化學性質，在現代工業的表面處理領域扮演著日益重要的角色。從半導體製造的微米級精密加工到醫療器材的生物相容性提升，再到紡織品的功能化，電漿技術的應用無所不在。
+            </p>
+            <p class="mb-4 text-lg leading-relaxed">
+                本報告深入探討了電漿的基本原理、各種電漿技術、關鍵製程及其在多個產業中的實際應用。透過本互動應用，您可以系統性地了解電漿如何改變材料表面特性，解決傳統技術的瓶頸，並推動各產業的創新發展。我們將一同探索電漿清潔、蝕刻、沉積、表面改質及滅菌等核心製程，並比較其與傳統技術的優劣，最後展望此領域的最新進展與未來趨勢。
+            </p>
+             <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+                <h3 class="text-xl font-semibold text-sky-500 mb-3">什麼是電漿？</h3>
+                <p class="mb-2">電漿被稱為物質的第四態，由陽離子、中性粒子及自由電子組成，整體呈現電中性。當氣體在外部能量（如高溫或強電磁場）作用下發生游離化，便會形成電漿。宇宙中絕大多數物質以電漿形態存在，例如太陽。其內部豐富的活性粒子使其成為極具反應活性的介質，能在常規條件下引發特殊的表面化學反應和物理過程。</p>
+            </div>
+        </section>
+
+        <section id="fundamentals" class="content-section">
+            <h2 class="text-3xl font-bold text-sky-600 mb-6">💡 電漿基礎</h2>
+            <p class="mb-6 text-lg leading-relaxed">
+                本章節將帶您深入了解電漿的基礎知識，包括電漿的產生方式、關鍵特性，以及影響其與材料表面交互作用的主要參數。理解這些基本原理是掌握電漿表面處理技術的基石，有助於我們認識為何電漿能在眾多表面改質應用中發揮獨特作用。我們將探討不同類型的電漿（如大氣壓電漿與低壓電漿、熱電漿與冷電漿）及其各自的特點與適用範圍。
+            </p>
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-sky-500 mb-3">2.1 電漿的產生與特性</h3>
+                    <p class="mb-2">電漿是通過向氣體輸入能量（如直流放電、射頻放電、微波放電）使其游離而產生的。關鍵特性包括：</p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-700">
+                        <li><strong>電子溫度 ($T_e$) 與離子溫度 ($T_i$)</strong>：冷電漿中 $T_e \gg T_i$，高能電子驅動反應。</li>
+                        <li><strong>電漿密度 ($n_e, n_i$)</strong>：單位體積內帶電粒子數，影響反應速率。</li>
+                        <li><strong>活性粒子</strong>：包含自由基、受激態原子/分子等，是化學反應核心。</li>
+                        <li><strong>電漿鞘層</strong>：電漿與固體表面接觸時形成的離子空間電荷區，加速離子轟擊表面。</li>
+                    </ul>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-sky-500 mb-3">2.2 影響表面交互作用的關鍵電漿參數</h3>
+                    <p class="mb-2">精確控制以下參數是優化製程的關鍵：</p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-700">
+                        <li><strong>氣體種類與組成</strong>：決定活性粒子種類 (如 $CF_4$ 蝕刻矽，$SiH_4$ 沉積矽膜)。</li>
+                        <li><strong>氣體壓力</strong>：影響平均自由徑、碰撞頻率、離子能量和方向性。</li>
+                        <li><strong>輸入功率</strong>：影響游離程度、電漿密度、活性粒子濃度。</li>
+                        <li><strong>氣體流速</strong>：影響反應物停留時間和副產物排除。</li>
+                        <li><strong>電源頻率</strong>：影響RF電漿特性，如離子能量分佈。</li>
+                        <li><strong>基材溫度</strong>：影響表面反應速率、薄膜結構與附著力。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-sky-500 mb-3">表1：主要電漿類型比較 (圖表)</h3>
+                <p class="mb-4 text-slate-600">此圖表比較了不同電漿類型（低壓電漿 LPP、大氣壓電漿 APP、熱電漿、冷電漿）在處理精度、設備成本（評分越高代表成本效益越好，即成本相對較低）和低溫處理能力方面的相對表現。評分為1-5級，5為最佳。</p>
+                <div class="chart-container">
+                    <canvas id="plasmaTypeChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="processes" class="content-section">
+            <h2 class="text-3xl font-bold text-sky-600 mb-6">🔬 關鍵電漿表面處理製程</h2>
+            <p class="mb-6 text-lg leading-relaxed">
+                電漿技術衍生出多種表面處理製程，透過電漿與材料表面的複雜交互作用，實現對表面性質的精確調控。本節將介紹幾種核心的電漿表面處理技術，包括電漿清潔與活化、電漿蝕刻（物理性與化學性）、電漿沉積（PVD與PECVD）、電漿表面改質（如滲氮、離子佈植）以及電漿滅菌。每種製程都有其獨特的機制和應用優勢。
+            </p>
+            <div class="space-y-6">
+                <details class="bg-white shadow-lg rounded-lg p-4 group">
+                    <summary class="text-xl font-semibold text-sky-500 cursor-pointer group-hover:text-sky-700">3.1 電漿清潔與表面活化</summary>
+                    <div class="mt-3 text-slate-700 leading-relaxed">
+                        <p><strong>電漿清潔</strong>：去除表面有機/無機污染物。機制：化學反應（如氧電漿氧化污染物）或物理濺射（如氬離子轟擊）。優勢：高效去除奈米級污染物，乾式製程。
+                        <p><strong>電漿表面活化</strong>：提高表面潤濕性與黏附性。機制：引入極性官能團（如-OH, -NH2），表面微粗糙化，去除弱邊界層。應用：高分子材料（如PE, PP, PET）印刷、黏合前處理。</p>
+                    </div>
+                </details>
+                <details class="bg-white shadow-lg rounded-lg p-4 group">
+                    <summary class="text-xl font-semibold text-sky-500 cursor-pointer group-hover:text-sky-700">3.2 電漿蝕刻</summary>
+                    <div class="mt-3 text-slate-700 leading-relaxed">
+                        <p>選擇性去除材料，用於微電子製造、MEMS加工。類型：</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li><strong>物理性蝕刻（濺射蝕刻）</strong>：高能離子物理轟擊去除材料，方向性好，選擇性差。</li>
+                            <li><strong>化學性蝕刻</strong>：活性自由基與表面化學反應生成揮發物，選擇性高，常為各向同性。</li>
+                            <li><strong>反應離子蝕刻 (RIE)</strong>：結合物理轟擊與化學反應，可實現高選擇性、高方向性蝕刻。高密度電漿 (HDP) 蝕刻可提高速率和控制。挑戰：電漿誘導損傷 (PID) 和電荷累積。</li>
+                        </ul>
+                    </div>
+                </details>
+                 <details class="bg-white shadow-lg rounded-lg p-4 group">
+                    <summary class="text-xl font-semibold text-sky-500 cursor-pointer group-hover:text-sky-700">3.3 電漿沉積</summary>
+                    <div class="mt-3 text-slate-700 leading-relaxed">
+                        <p>在基材表面形成薄膜。主要分為：</p>
+                        <p class="mt-2"><strong>3.3.1 電漿輔助物理氣相沉積 (PVD)</strong>：固態/液態源材轉為氣態後凝結成膜，電漿增強離化或改善附著力。常見技術：</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li><strong>濺射沉積</strong>：惰性氣體電漿離子轟擊靶材，濺射出原子沉積成膜。磁控濺射提高效率。</li>
+                            <li><strong>離子鍍</strong>：沉積物部分離子化，基材負偏壓下加速沉積，膜層緻密附著力強。</li>
+                            <li><strong>陰極電弧沉積</strong>：電弧蒸發離化靶材，高速率高離化率，用於硬質塗層。</li>
+                        </ul>
+                        <p class="mt-2"><strong>3.3.2 電漿增強化學氣相沉積 (PECVD)</strong>：電漿分解前驅物氣體，活性粒子在基材表面反應成膜。優勢：</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li><strong>低溫沉積能力</strong>：適用於熱敏材料 (如200-400°C沉積氮化矽)。</li>
+                            <li><strong>薄膜性質可調控性</strong>：通過電漿參數控制膜的化學計量比、結構、性能。</li>
+                        </ul>
+                        <p class="mt-1">應用：介電薄膜 ($SiN_x, SiO_x$)，半導體薄膜 (a-Si:H, poly-Si)，硬質薄膜 (DLC)。</p>
+                    </div>
+                </details>
+                <details class="bg-white shadow-lg rounded-lg p-4 group">
+                    <summary class="text-xl font-semibold text-sky-500 cursor-pointer group-hover:text-sky-700">3.4 電漿表面改質</summary>
+                     <div class="mt-3 text-slate-700 leading-relaxed">
+                        <p>直接改變材料表層化學組成、結構或物理性質，不一定形成全新薄膜。主要技術：</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li><strong>電漿滲氮/滲碳</strong>：活性氮/碳原子擴散入金屬表面形成硬質氮/碳化物層，提高硬度、耐磨性 (如鋼鐵)。優點：低溫、短時、環保。</li>
+                            <li><strong>電漿浸沒離子佈植 (PIII)</strong>：工件浸於電漿中，高壓負脈衝注入離子，改善硬度、耐磨、生物相容性 (如醫用植入物)。</li>
+                            <li><strong>電漿聚合</strong>：有機單體蒸氣在電漿中聚合形成高度交聯、無針孔高分子薄膜，具特殊功能 (阻隔、親/疏水、生物相容)。</li>
+                            <li><strong>電漿氧化/官能化</strong>：氧電漿形成氧化層或引入含氧官能團；氮電漿引入胺基，用於生物材料。</li>
+                        </ul>
+                    </div>
+                </details>
+                <details class="bg-white shadow-lg rounded-lg p-4 group">
+                    <summary class="text-xl font-semibold text-sky-500 cursor-pointer group-hover:text-sky-700">3.5 電漿滅菌</summary>
+                    <div class="mt-3 text-slate-700 leading-relaxed">
+                        <p>利用低溫電漿殺滅微生物（細菌、病毒、芽孢），適用於熱敏醫療器械。機制：</p>
+                        <ul class="list-disc list-inside ml-4 space-y-1">
+                            <li><strong>活性粒子作用</strong>：活性氧物種 (ROS) 和活性氮物種 (RNS) 破壞微生物細胞結構。</li>
+                            <li><strong>紫外 (UV) 輻射</strong>：損傷微生物 DNA/RNA。</li>
+                            <li><strong>帶電粒子作用</strong>：靜電破壞細胞膜。</li>
+                        </ul>
+                        <p class="mt-1">優勢：低溫、快速、高效、通常無毒殘留。冷大氣壓電漿 (CAP) 和電漿活化水 (PAW) 是重要發展方向。</p>
+                    </div>
+                </details>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-6 mt-8">
+                <h3 class="text-xl font-semibold text-sky-500 mb-3">表2：主要電漿表面處理製程應用廣度 (圖表)</h3>
+                <p class="mb-4 text-slate-600">此水平長條圖顯示了不同電漿表面處理製程的「應用廣度」的相對評分（1-5級，5為最廣）。評分綜合考量了報告中提及的該製程可處理的材料種類和可實現的效果多樣性。將滑鼠懸停在長條上可查看該製程的核心原理和典型氣體/前驅物。</p>
+                <div class="chart-container h-[500px] max-h-[600px]">
+                    <canvas id="processBreadthChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="applications" class="content-section">
+            <h2 class="text-3xl font-bold text-sky-600 mb-6">🏭 電漿表面處理在各產業的應用</h2>
+            <p class="mb-6 text-lg leading-relaxed">
+                電漿表面處理技術因其多功能性和獨特優勢，已廣泛滲透到眾多工業領域。本節將展示電漿技術在半導體製造、生物醫學、汽車工業、紡織工業、光學塗層以及航太、能源與環保等關鍵產業中的具體應用案例。這些案例突顯了電漿技術如何解決行業挑戰，提升產品性能，並推動技術創新。
+            </p>
+            <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+                <h3 class="text-xl font-semibold text-sky-500 mb-3">表3：電漿表面處理的關鍵工業應用分佈 (圖表)</h3>
+                <p class="mb-4 text-slate-600">此甜甜圈圖顯示了報告中提及的電漿表面處理特定應用在不同工業領域的數量分佈。點擊圖表的某個區段，下方將顯示該行業的具體應用列表。</p>
+                <div class="chart-container">
+                    <canvas id="industrialApplicationsChart"></canvas>
+                </div>
+                <div id="applicationsList" class="mt-6 p-4 bg-slate-50 rounded-md">
+                    <h4 class="text-lg font-semibold text-sky-600 mb-2">點擊圖表區段以查看應用列表</h4>
+                    <ul id="specificApplications" class="list-disc list-inside space-y-1 text-slate-700"></ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="comparison" class="content-section">
+            <h2 class="text-3xl font-bold text-sky-600 mb-6">⚖️ 電漿與傳統表面處理技術比較</h2>
+            <p class="mb-6 text-lg leading-relaxed">
+                電漿表面處理技術的興起並非旨在完全取代所有傳統方法，而是在許多特定應用中提供了性能更優越、製程更可控或更環保的解決方案。本節將對電漿處理與其傳統對應技術進行比較分析，探討其各自的優勢、局限性及適用場景，幫助您更全面地理解電漿技術的價值所在。
+            </p>
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                 <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-sky-500 mb-3">5.1 電漿處理的優勢</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><strong>精密性與可控性</strong>：原子/分子尺度控制，各向異性蝕刻。</li>
+                        <li><strong>材料通用性</strong>：適用金屬、半導體、陶瓷、玻璃、高分子、紡織品。</li>
+                        <li><strong>低溫處理能力</strong>：冷電漿適用於熱敏材料。</li>
+                        <li><strong>環境效益</strong>：乾式製程，減少溶劑和廢液排放。</li>
+                        <li><strong>獨特的化學與物理效應</strong>：產生高活性粒子，引發特殊反應。</li>
+                        <li><strong>改善的附著性能</strong>：高效清潔活化，增強塗層/黏合劑附著力。</li>
+                        <li><strong>部分應用中的效率與速度</strong>：大氣壓電漿可連續高速處理。</li>
+                    </ul>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-sky-500 mb-3">5.2 電漿處理的局限性與挑戰</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><strong>設備成本</strong>：高真空低壓電漿系統初始投資高。</li>
+                        <li><strong>規模放大與產能</strong>：低壓批次處理產能受限，大氣壓大面積均勻性是挑戰。</li>
+                        <li><strong>真空系統的複雜性</strong>：增加設備複雜度和維護成本。</li>
+                        <li><strong>電漿誘導損傷 (PID)</strong>：對敏感材料（如半導體）可能造成損傷。</li>
+                        <li><strong>製程複雜性與專業知識需求</strong>：參數多且互相關聯，需專業知識。</li>
+                        <li><strong>三維複雜形貌處理的均勻性</strong>：某些製程難以均勻處理複雜結構。</li>
+                        <li><strong>電漿化學的選擇性</strong>：實現高度選擇性化學反應有時困難。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-xl font-semibold text-sky-500 mb-3">表4：電漿與傳統技術在關鍵特性上的比較 (雷達圖)</h3>
+                <p class="mb-4 text-slate-600">此雷達圖比較了電漿處理技術與傳統表面處理技術在五個關鍵特性上的綜合表現：精密性/可控性、低溫處理優勢、環保性、操作彈性/適用性，以及成本效益（此處指綜合效益，分數越高越優）。</p>
+                <div class="chart-container">
+                    <canvas id="comparisonRadarChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <section id="future" class="content-section">
+            <h2 class="text-3xl font-bold text-sky-600 mb-6">🚀 電漿表面處理的最新進展與未來展望</h2>
+            <p class="mb-6 text-lg leading-relaxed">
+                電漿表面處理技術作為一個充滿活力的研究領域，正不斷湧現新的理論、技術和應用。本節將探討該領域的一些最新進展，例如脈衝電漿、超低電子溫度電漿等創新電漿源與製程控制技術，以及在軟材料加工、奈米材料、農業與食品科學等新興領域的應用。同時，我們也將展望電漿技術邁向更環保、更高效的發展趨勢。
+            </p>
+            <div class="space-y-6">
+                <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-sky-500 mb-3">6.1 電漿源與製程控制的創新</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><strong>脈衝電漿</strong>：時間調製能量輸入，精確控制粒子能量、活性物種，減少熱負載和PID。</li>
+                        <li><strong>超低電子溫度電漿 (ULET)</strong>：電子溫度 &lt; 0.5 eV，實現「無損傷」原子級加工，適用於極端敏感材料。</li>
+                        <li><strong>近電漿化學表面工程 (NPC)</strong>：調控電漿與基材交互區，減少離子轟擊，實現更溫和、選擇性的化學改質。</li>
+                        <li><strong>先進電漿診斷與建模</strong>：OES, LIF, 質譜等結合數值模擬，深入理解電漿過程，實現模型化製程設計與控制。</li>
+                        <li><strong>混合/協同電漿系統</strong>：結合不同頻率RF源或與雷射、離子束協同，開闢新製程窗口。</li>
+                    </ul>
+                </div>
+                 <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-sky-500 mb-3">6.2 新興應用領域</h3>
+                    <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><strong>軟材料加工</strong>：高分子、水凝膠、彈性體等的表面改質、功能化、圖案化。</li>
+                        <li><strong>奈米材料的合成與改質</strong>：合成奈米顆粒、奈米線等，並進行表面改質。</li>
+                        <li><strong>農業與食品科學</strong>：種子處理、植物生長促進、病害防治、食品滅菌保鮮、農藥降解、綠色肥料生產 (利用PAW)。</li>
+                        <li><strong>增材製造 (3D列印)</strong>：作為後處理技術，改善3D列印件的表面性能。</li>
+                    </ul>
+                </div>
+                <div class="bg-white shadow-lg rounded-lg p-6">
+                    <h3 class="text-xl font-semibold text-sky-500 mb-3">6.3 邁向更環保、更高效的電漿技術趨勢</h3>
+                     <ul class="list-disc list-inside space-y-2 text-slate-700">
+                        <li><strong>節能與環保型電漿源</strong>：開發低能耗電漿源，使用環保氣體。</li>
+                        <li><strong>替代高污染傳統濕式製程</strong>：乾式電漿製程取代化學清洗、鹽浴氮化等。</li>
+                        <li><strong>廢棄物資源化與污染控制</strong>：熱電漿處理危險廢棄物，非熱電漿淨化廢氣/廢水。</li>
+                        <li><strong>提高製程效率與智能化水平</strong>：大面積/複雜形狀處理，自動化、智能化製程控制。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const navLinks = document.querySelectorAll('.sidebar-link');
+        const mobileNav = document.getElementById('mobile-nav');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        function setActiveSection(hash) {
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === hash) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            contentSections.forEach(section => {
+                if ('#' + section.id === hash) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+            if (mobileNav.value !== hash.substring(1)) {
+                mobileNav.value = hash.substring(1);
+            }
+            window.scrollTo(0, 0);
+        }
+        
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                setActiveSection(targetId);
+                history.pushState(null, null, targetId);
+            });
+        });
+
+        mobileNav.addEventListener('change', (e) => {
+            const targetId = '#' + e.target.value;
+            setActiveSection(targetId);
+            history.pushState(null, null, targetId);
+        });
+
+        window.addEventListener('popstate', () => {
+            const hash = window.location.hash || '#overview';
+            setActiveSection(hash);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentHash = window.location.hash || '#overview';
+            setActiveSection(currentHash);
+
+            const plasmaTypeData = {
+                labels: ['低壓電漿 (LPP)', '大氣壓電漿 (APP)', '熱電漿', '非熱(冷)電漿'],
+                datasets: [
+                    {
+                        label: '處理精度 (越高越好)',
+                        data: [4, 3, 2, 4], 
+                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '設備成本效益 (越高越好)',
+                        data: [2, 4, 3, 3], 
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: '低溫處理能力 (越高越好)',
+                        data: [4, 4, 1, 5],
+                        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+            new Chart(document.getElementById('plasmaTypeChart'), {
+                type: 'bar',
+                data: plasmaTypeData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } } },
+                    plugins: {
+                        title: { display: true, text: '表1：主要電漿類型特性比較 (評分1-5)' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) { label += ': '; }
+                                    if (context.parsed.y !== null) { label += context.parsed.y + '分'; }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const processData = {
+                labels: [
+                    '電漿清潔', '電漿活化', '電漿蝕刻 (物理)', '電漿蝕刻 (化學/RIE)', 
+                    '電漿PVD', 'PECVD', '電漿滲氮/滲碳', 'PIII', 
+                    '電漿聚合', '電漿滅菌'
+                ],
+                datasets: [{
+                    label: '應用廣度評分 (1-5)',
+                    data: [4, 5, 3, 5, 4, 5, 3, 4, 4, 4], 
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)',
+                        'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)',
+                        'rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)', 'rgba(75, 192, 192, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)', 'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            };
+             const processDetails = [
+                { core: '污染物化學反應/物理濺射去除', gas: 'O2, Ar, H2' },
+                { core: '引入極性官能團, 增表面能', gas: 'O2, N2, NH3' },
+                { core: '高能離子物理轟擊', gas: 'Ar' },
+                { core: '活性自由基化學反應+離子轟擊', gas: 'CF4, Cl2, O2' },
+                { core: '離子轟擊靶材濺射沉積', gas: 'Ar (濺射氣體)' },
+                { core: '電漿分解前驅物氣體反應成膜', gas: 'SiH4, NH3, CH4' },
+                { core: '活性N/C原子擴散入金屬形成硬質層', gas: 'N2/H2 (滲氮), CH4 (滲碳)' },
+                { core: '離子高壓脈衝注入材料近表面', gas: 'N2, Ar, O, C' },
+                { core: '有機單體蒸氣裂解聚合', gas: '有機單體 (HMDSO等)' },
+                { core: 'UV, ROS, RNS等多重機制殺菌', gas: '空氣, O2, N2, H2O2' }
+            ];
+            new Chart(document.getElementById('processBreadthChart'), {
+                type: 'bar',
+                data: processData,
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { x: { beginAtZero: true, max: 5, ticks: { stepSize: 1 } } },
+                    plugins: {
+                        title: { display: true, text: '表2：主要電漿表面處理製程應用廣度 (評分1-5)' },
+                        tooltip: {
+                             enabled: false,
+                             external: function(context) {
+                                let tooltipEl = document.getElementById('chartjs-tooltip');
+                                if (!tooltipEl) {
+                                    tooltipEl = document.createElement('div');
+                                    tooltipEl.id = 'chartjs-tooltip';
+                                    tooltipEl.className = 'tooltip';
+                                    document.body.appendChild(tooltipEl);
+                                }
+                                const tooltipModel = context.tooltip;
+                                if (tooltipModel.opacity === 0) {
+                                    tooltipEl.style.opacity = 0;
+                                    return;
+                                }
+                                function getBody(bodyItem) { return bodyItem.lines; }
+                                if (tooltipModel.body) {
+                                    const titleLines = tooltipModel.title || [];
+                                    const bodyLines = tooltipModel.body.map(getBody);
+                                    let innerHtml = '';
+                                    titleLines.forEach(function(title) { innerHtml += '<div class="font-bold">' + title + '</div>'; });
+                                    
+                                    const processIndex = tooltipModel.dataPoints[0].dataIndex;
+                                    const detail = processDetails[processIndex];
+                                    innerHtml += '<div>核心原理: ' + detail.core + '</div>';
+                                    innerHtml += '<div>典型氣體/前驅物: ' + detail.gas + '</div>';
+                                    
+                                    bodyLines.forEach(function(body, i) {
+                                        const colors = tooltipModel.labelColors[i];
+                                        let style = 'background:' + colors.backgroundColor;
+                                        style += '; border-color:' + colors.borderColor;
+                                        style += '; border-width: 2px';
+                                        const span = '<span style="' + style + '"></span>';
+                                        innerHtml += '<div>' + span + body + '</div>';
+                                    });
+                                    tooltipEl.innerHTML = innerHtml;
+                                }
+                                const position = context.chart.canvas.getBoundingClientRect();
+                                tooltipEl.style.opacity = 1;
+                                tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                                tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                                tooltipEl.style.font = tooltipModel.options.bodyFont.string;
+                                tooltipEl.style.padding = tooltipModel.options.padding + 'px ' + tooltipModel.options.padding + 'px';
+                            }
+                        }
+                    }
+                }
+            });
+
+            const industrialApplicationsData = {
+                labels: ['半導體', '生物醫學', '汽車工業', '紡織工業', '光學工業', '航太工業', '能源工業', '環保工業'],
+                datasets: [{
+                    label: '特定應用數量',
+                    data: [3, 3, 3, 1, 1, 3, 2, 4], // Based on Table 3 "特定電漿應用" count per industry
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)',
+                        'rgba(255, 206, 86, 0.7)', 'rgba(75, 192, 192, 0.7)',
+                        'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)',
+                        'rgba(100, 255, 100, 0.7)', 'rgba(200, 200, 200, 0.7)'
+                    ],
+                    hoverOffset: 4
+                }]
+            };
+            const specificAppsByIndustry = {
+                '半導體': ['各向異性蝕刻 (精細圖形轉移)', '介電層/導電層沉積', '光阻去除 (灰化)'],
+                '生物醫學': ['醫療器械低溫滅菌', '植入物表面生物相容性改質', '藥物控釋塗層'],
+                '汽車工業': ['引擎部件表面硬化/耐磨塗層', '塑膠/橡膠件黏合/塗裝前活化', '耐腐蝕/熱障塗層'],
+                '紡織工業': ['織物功能化 (防水、親水、抗菌、阻燃等)'],
+                '光學工業': ['光學薄膜沉積 (抗反射、硬質膜等)', '光學元件精密清潔'],
+                '航太工業': ['渦輪葉片熱障塗層', '結構件耐磨/抗腐蝕塗層', '複合材料表面活化'],
+                '能源工業': ['薄膜太陽能電池製造', '燃料電池組件製備'],
+                '環保工業': ['廢氣/尾氣淨化', '廢水處理', '危險廢棄物玻璃化', '綠色肥料生產']
+            };
+            const appChart = new Chart(document.getElementById('industrialApplicationsChart'), {
+                type: 'doughnut',
+                data: industrialApplicationsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: { display: true, text: '表3：電漿表面處理的關鍵工業應用分佈' },
+                        legend: { position: 'top' },
+                    },
+                    onClick: (event, elements) => {
+                        if (elements.length > 0) {
+                            const chartElement = elements[0];
+                            const index = chartElement.index;
+                            const industry = industrialApplicationsData.labels[index];
+                            const apps = specificAppsByIndustry[industry];
+                            
+                            const listContainerTitle = document.querySelector('#applicationsList h4');
+                            const listUl = document.getElementById('specificApplications');
+                            
+                            listContainerTitle.textContent = industry + '：特定應用列表';
+                            listUl.innerHTML = ''; 
+                            if (apps && apps.length > 0) {
+                                apps.forEach(app => {
+                                    const li = document.createElement('li');
+                                    li.textContent = app;
+                                    listUl.appendChild(li);
+                                });
+                            } else {
+                                listUl.innerHTML = '<li>暫無詳細應用資訊。</li>';
+                            }
+                        }
+                    }
+                }
+            });
+
+            const comparisonRadarData = {
+                labels: ['精密性/可控性', '低溫處理優勢', '環保性', '操作彈性/適用性', '綜合成本效益'],
+                datasets: [
+                    {
+                        label: '電漿處理技術',
+                        data: [4.5, 4.5, 4, 4, 3.5], // Scores 1-5
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    },
+                    {
+                        label: '傳統處理技術',
+                        data: [2.5, 2, 2, 3, 4], // Scores 1-5
+                        fill: true,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        pointBackgroundColor: 'rgb(255, 99, 132)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(255, 99, 132)'
+                    }
+                ]
+            };
+            new Chart(document.getElementById('comparisonRadarChart'), {
+                type: 'radar',
+                data: comparisonRadarData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: { line: { borderWidth: 3 } },
+                    scales: { r: { angleLines: { display: true }, suggestedMin: 0, suggestedMax: 5, ticks: { stepSize: 1 } } },
+                    plugins: {
+                        title: { display: true, text: '表4：電漿與傳統技術特性比較 (評分1-5，越高越優)' }
+                    }
+                }
+            });
+        });
+    </script>
+        </div>
+    </div>
+</body>
+</html>
