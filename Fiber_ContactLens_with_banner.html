@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>電漿在光纖與隱形眼鏡表面處理之應用</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+&lt;0&gt;<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Noto+Sans+TC:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<!-- Visualization & Content Choices:
+- [Report Info: Plasma Techniques Overview (Table 1)] -> [Goal: Organize/Inform] -> [Viz: Interactive HTML/CSS Diagram] -> [Interaction: Click buttons to reveal details] -> [Justification: More engaging and digestible than a static table.] -> [Library/Method: Vanilla JS, Tailwind CSS].
+- [Report Info: Wettability Improvement Data] -> [Goal: Compare before/after] -> [Viz: Bar Chart] -> [Interaction: Static display showing dramatic change in contact angle] -> [Justification: Clear, quantitative visualization of a key benefit.] -> [Library/Method: Chart.js].
+- [Report Info: Coating Materials (Tables 2 & 3)] -> [Goal: Compare/Inform] -> [Viz: Interactive Card System via Tabs] -> [Interaction: Click tabs to switch between goal-oriented coating details] -> [Justification: Dynamically presents detailed information in a compact, user-controlled manner, focusing on the benefit of the coating.] -> [Library/Method: Vanilla JS, Tailwind CSS].
+- [Report Info: LPP vs APP] -> [Goal: Compare] -> [Viz: Side-by-side HTML table] -> [Interaction: Static comparison] -> [Justification: Direct, scannable comparison of process characteristics.] -> [Library/Method: Tailwind CSS].
+This plan ensures all key report information is presented in the most effective, interactive format possible without using SVG or Mermaid. -->
+<style>
+body {
+font-family: 'Inter', 'Noto Sans TC', sans-serif;
+background-color: #F8F7F4;
+color: #4A5568;
+}
+.nav-button {
+transition: all 0.3s ease;
+}
+.nav-button.active {
+background-color: #4FD1C5;
+color: white;
+box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+.content-section {
+display: none;
+animation: fadeIn 0.8s;
+}
+.content-section.active {
+display: block;
+}
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+.tab-button {
+transition: all 0.2s ease-in-out;
+border-bottom: 2px solid transparent;
+}
+.tab-button.active {
+border-color: #4FD1C5;
+color: #2C7A7B;
+font-weight: 600;
+}
+.tech-btn.active {
+background-color: #38B2AC;
+color: white;
+border-color: #38B2AC;
+}
+.chart-container {
+position: relative;
+width: 100%;
+max-width: 500px;
+margin-left: auto;
+margin-right: auto;
+height: 300px;
+max-height: 350px;
+}
+@media (min-width: 768px) {
+.chart-container {
+height: 350px;
+}
+}
+</style>
+</head>
+<body class="antialiased">
+<div class="w-full bg-yellow-100 text-yellow-900 text-center py-2 px-4 text-sm font-semibold shadow-md">
+    ⚠️ 100% AI生成，請謹慎服用
+</div>
+
+<div class="container mx-auto p-4 md:p-8 max-w-7xl">
+<header class="text-center mb-8">
+<h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">電漿表面處理技術</h1>
+<p class="text-lg md:text-xl text-gray-600">光纖與隱形眼鏡的應用探索</p>
+</header>
+<nav class="flex justify-center flex-wrap gap-2 md:gap-4 mb-10">
+<button class="nav-button active text-sm md:text-base font-semibold py-2 px-5 rounded-full bg-white shadow-sm hover:bg-gray-100" data-target="overview">💡 總覽與核心技術</button>
+<button class="nav-button text-sm md:text-base font-semibold py-2 px-5 rounded-full bg-white shadow-sm hover:bg-gray-100" data-target="fiber">🔬 光纖應用</button>
+<button class="nav-button text-sm md:text-base font-semibold py-2 px-5 rounded-full bg-white shadow-sm hover:bg-gray-100" data-target="lens">👁️ 隱形眼鏡應用</button>
+</nav>
+<main>
+<section class="content-section active" id="overview">
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-8">
+<h2 class="text-2xl font-bold text-gray-800 mb-4">歡迎來到電漿技術互動指南</h2>
+<p class="text-gray-600 leading-relaxed">
+                    本應用程式將帶您深入了解「物質第四態」——電漿，如何成為一項革命性的表面處理技術。我們將重點探討此技術在兩個高科技領域：精密光纖與醫療級隱形眼鏡中的應用。您將發現電漿如何在不改變材料本體性質的前提下，僅透過奈米級的表面改質，就能顯著提升產品的性能、安全性與功能性。請點擊上方按鈕，開始您的探索之旅。
+                </p>
+</div>
+<div class="grid md:grid-cols-2 gap-8">
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+<h3 class="text-xl font-bold text-gray-800 mb-4">核心電漿處理技術</h3>
+<p class="text-gray-600 mb-6">電漿處理利用高能粒子與材料表面交互作用，實現多種改質目的。點擊下方技術按鈕，了解其原理與應用。</p>
+<div id="plasma-tech-interactive">
+<div class="flex flex-wrap gap-2 mb-4">
+<button class="tech-btn active flex-grow text-center p-2 rounded-lg bg-teal-50 border border-teal-200 text-teal-800 font-semibold transition" data-tech="clean">清潔</button>
+<button class="tech-btn flex-grow text-center p-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 font-semibold transition" data-tech="etch">蝕刻</button>
+<button class="tech-btn flex-grow text-center p-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 font-semibold transition" data-tech="activate">活化</button>
+<button class="tech-btn flex-grow text-center p-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 font-semibold transition" data-tech="deposit">沉積</button>
+</div>
+<div class="bg-gray-50 p-4 rounded-lg min-h-[150px] transition-all duration-300" id="tech-display">
+<h4 class="font-bold text-lg text-teal-700 mb-2" id="tech-title">電漿清潔</h4>
+<p class="text-gray-700" id="tech-desc">利用氧氣或氬氣電漿，透過氧化或物理濺射，去除表面的有機污染物和微粒，達到原子級潔淨，為後續製程打下完美基礎。</p>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+<h3 class="text-xl font-bold text-gray-800 mb-4">未來趨勢與展望 (2023-2025+)</h3>
+<p class="text-gray-600 mb-6">電漿技術正推動光纖與隱形眼鏡走向「智慧化」與「多功能化」，整合感測、治療與數據傳輸能力。</p>
+<ul class="space-y-4">
+<li class="flex items-start">
+<span class="text-teal-500 mr-3 mt-1 font-bold">▶</span>
+<div>
+<h4 class="font-semibold text-gray-700">智慧隱形眼鏡 (SCL)</h4>
+<p class="text-gray-600 text-sm">整合微型感測器與電路，用於即時監測眼壓、血糖等生理數據，並具備藥物緩釋和擴增實境潛力。</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="text-teal-500 mr-3 mt-1 font-bold">▶</span>
+<div>
+<h4 class="font-semibold text-gray-700">多功能光纖</h4>
+<p class="text-gray-600 text-sm">開發用於嚴苛環境的堅固塗層，並將AI與光纖感測結合，實現「光子鼻」等高靈敏度、多重分析物的感測系統。</p>
+</div>
+</li>
+<li class="flex items-start">
+<span class="text-teal-500 mr-3 mt-1 font-bold">▶</span>
+<div>
+<h4 class="font-semibold text-gray-700">永續與生物源材料</h4>
+<p class="text-gray-600 text-sm">利用天然油脂、萜烯等生物源前驅物進行電漿聚合，製造具抗菌、生物相容性的環保塗層。</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<section class="content-section" id="fiber">
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-8">
+<h2 class="text-2xl font-bold text-gray-800 mb-4">🔬 光纖的電漿表面處理</h2>
+<p class="text-gray-600 leading-relaxed">
+                    光纖是現代通訊和感測的基石，但其性能與壽命極度依賴其表面狀態。本節將探討電漿技術如何在不損害光纖核心光學特性的前提下，透過精密的表面改質，顯著增強其機械強度、環境耐受性，並賦予其先進的感測功能。
+                </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 bg-white rounded-xl shadow-lg p-6 md:p-8">
+<h3 class="text-xl font-bold text-gray-800 mb-4">光纖改質目標與方法</h3>
+<div class="border-b border-gray-200 mb-4">
+<nav aria-label="Tabs" class="-mb-px flex space-x-6">
+<button class="fiber-tab tab-button active py-3 px-1 text-sm font-medium" data-content="fiber-strength">強化機械性能</button>
+<button class="fiber-tab tab-button py-3 px-1 text-sm font-medium" data-content="fiber-sensing">賦予感測功能</button>
+<button class="fiber-tab tab-button py-3 px-1 text-sm font-medium" data-content="fiber-optical">改質光學特性</button>
+</nav>
+</div>
+<div class="min-h-[300px]" id="fiber-content">
+<div class="fiber-content-panel" id="fiber-strength">
+<h4 class="text-lg font-semibold text-gray-700 mb-2">增強強度、附著力與耐久性</h4>
+<p class="text-gray-600 mb-4">光纖的脆弱性是其主要弱點。電漿處理能有效應對此挑戰：</p>
+<ul class="list-disc list-inside space-y-2 text-gray-600">
+<li><strong>硬質塗層沉積:</strong> 利用PECVD技術沉積類鑽碳(DLC)或氮化矽(SiNx)等硬質薄膜，如同為光纖穿上奈米級的「盔甲」，顯著提高抗刮擦和抗壓能力。</li>
+<li><strong>黏合促進:</strong> 在塗佈保護層前，先以電漿活化石英表面，引入極性官能基，大幅增強保護層與光纖的黏合力，減少分層，提升抗疲勞壽命。</li>
+<li><strong>氣密性塗層:</strong> 電漿沉積的緻密碳塗層可作為高效的阻擋層，防止水分和氫分子滲透，確保光纖在海底或油井等嚴苛環境中的長期可靠性。</li>
+</ul>
+</div>
+<div class="fiber-content-panel hidden" id="fiber-sensing">
+<h4 class="text-lg font-semibold text-gray-700 mb-2">實現高階感測與生物相容性</h4>
+<p class="text-gray-600 mb-4">電漿功能化是將標準光纖轉變為高階生物或化學感測器的關鍵。</p>
+<ul class="list-disc list-inside space-y-2 text-gray-600">
+<li><strong>表面功能化:</strong> 在光纖表面接枝特定的化學官能基（如胺基、羧基），用於固定抗體、酵素等生物分子，實現對特定分析物的高靈敏度檢測。</li>
+<li><strong>生物相容塗層:</strong> 對於植入式醫療感測應用，可沉積生物相容性聚合物塗層，減少體內不良反應和非特異性吸附。</li>
+<li><strong>電漿子材料沉積:</strong> 確保金屬薄膜（如金、銀）的均勻沉積，以產生表面電漿子共振（SPR）效應，用於超靈敏的分子檢測。</li>
+</ul>
+</div>
+<div class="fiber-content-panel hidden" id="fiber-optical">
+<h4 class="text-lg font-semibold text-gray-700 mb-2">精準調控光學特性</h4>
+<p class="text-gray-600 mb-4">電漿處理能精準調控光纖表面的光學行為。</p>
+<ul class="list-disc list-inside space-y-2 text-gray-600">
+<li><strong>抗反射(AR)塗層:</strong> 透過PECVD精確沉積多層SiO2/SiNx堆疊，可最大限度地減少光纖端面的菲涅爾反射，提高光傳輸效率。</li>
+<li><strong>波導製造:</strong> 利用電漿沉積改變光纖表層的折射率分佈，可直接在光纖上製作微型光波導元件。</li>
+<li><strong>光纖光柵(FBG)改質:</strong> 電漿處理可改質光纖光柵的表面，以增強其對特定物理或化學參數的敏感度。</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+<h3 class="text-xl font-bold text-gray-800 mb-4">製程技術比較</h3>
+<p class="text-gray-600 mb-6">低壓與大氣壓電漿各有優勢，選擇取決於具體應用需求。</p>
+<div class="space-y-6">
+<div>
+<h4 class="font-semibold text-lg text-gray-700 mb-2">低壓電漿 (LPP)</h4>
+<ul class="space-y-2 text-gray-600 text-sm">
+<li class="flex items-center"><span class="text-green-500 text-lg mr-2">✓</span> <strong>均勻性:</strong> 極佳</li>
+<li class="flex items-center"><span class="text-green-500 text-lg mr-2">✓</span> <strong>精密度:</strong> 極高，可控性強</li>
+<li class="flex items-center"><span class="text-red-500 text-lg mr-2">✗</span> <strong>產能:</strong> 批次處理，較低</li>
+<li class="flex items-center"><span class="text-red-500 text-lg mr-2">✗</span> <strong>成本:</strong> 設備昂貴，需真空</li>
+<li class="flex items-start"><span class="text-blue-500 text-lg mr-2">‣</span> <strong>適用於:</strong> 高品質鍍膜、精密感測層、研發</li>
+</ul>
+</div>
+<div>
+<h4 class="font-semibold text-lg text-gray-700 mb-2">大氣壓電漿 (APP)</h4>
+<ul class="space-y-2 text-gray-600 text-sm">
+<li class="flex items-center"><span class="text-green-500 text-lg mr-2">✓</span> <strong>產能:</strong> 連續處理，高</li>
+<li class="flex items-center"><span class="text-green-500 text-lg mr-2">✓</span> <strong>成本:</strong> 設備較簡單，無需真空</li>
+<li class="flex items-center"><span class="text-red-500 text-lg mr-2">✗</span> <strong>均勻性:</strong> 較具挑戰性</li>
+<li class="flex items-center"><span class="text-red-500 text-lg mr-2">✗</span> <strong>精密度:</strong> 控制較困難</li>
+<li class="flex items-start"><span class="text-blue-500 text-lg mr-2">‣</span> <strong>適用於:</strong> 線上清潔/活化、大批量製造</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section class="content-section" id="lens">
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8 mb-8">
+<h2 class="text-2xl font-bold text-gray-800 mb-4">👁️ 隱形眼鏡的電漿表面處理</h2>
+<p class="text-gray-600 leading-relaxed">
+                    隱形眼鏡的舒適度和安全性，幾乎完全取決於其表面特性。然而，高透氧的矽水膠材料普遍存在疏水性問題，導致鏡片易乾燥、易吸附淚液中的蛋白質。本節將展示電漿技術如何解決此核心矛盾，透過打造超薄的親水、抗污、抗菌表面，徹底革新配戴體驗，並為「智慧鏡片」的發展奠定基礎。
+                </p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+<h3 class="text-xl font-bold text-gray-800 mb-4">提升配戴舒適度與安全性</h3>
+<div class="border-b border-gray-200 mb-4">
+<nav aria-label="Tabs" class="-mb-px flex space-x-6">
+<button class="lens-tab tab-button active py-3 px-1 text-sm font-medium" data-content="lens-wettability">親水與潤滑</button>
+<button class="lens-tab tab-button py-3 px-1 text-sm font-medium" data-content="lens-deposit">抗沉積與抗菌</button>
+<button class="lens-tab tab-button py-3 px-1 text-sm font-medium" data-content="lens-advanced">先進塗層</button>
+</nav>
+</div>
+<div class="min-h-[300px]" id="lens-content">
+<div class="lens-content-panel" id="lens-wettability">
+<h4 class="text-lg font-semibold text-gray-700 mb-2">改善潤濕性與潤滑度</h4>
+<p class="text-gray-600 mb-4">電漿處理能將疏水的鏡片表面轉化為親水表面，讓淚膜能均勻鋪展，保持鏡片濕潤，減少乾燥感和眼瞼摩擦，大幅提升全天配戴的舒適度。</p>
+<ul class="list-disc list-inside space-y-2 text-gray-600">
+<li><strong>機制:</strong> 在表面引入含氧極性官能基，或在矽水膠上形成矽酸鹽島，從而降低接觸角。</li>
+<li><strong>效益:</strong> 增加表面水分保持力、增強潤滑、減少眼瞼摩擦、提升舒適感。</li>
+<li><strong>持久性:</strong> 效果可持續數週，但會隨配戴和清潔而減弱，因此先進塗層的開發至關重要。</li>
+</ul>
+</div>
+<div class="lens-content-panel hidden" id="lens-deposit">
+<h4 class="text-lg font-semibold text-gray-700 mb-2">減少沉積與賦予抗菌性</h4>
+<p class="text-gray-600 mb-4">鏡片上的沉積物和細菌是導致視力模糊、過敏和感染的主要原因。</p>
+<ul class="list-disc list-inside space-y-2 text-gray-600">
+<li><strong>抗蛋白質/脂質沉積:</strong> 親水的電漿處理表面能在鏡片上形成一層「水盾」，有效抵抗淚液中的蛋白質和脂質附著，維持視力清晰。</li>
+<li><strong>賦予抗菌特性:</strong> 透過沉積抗菌塗層（如銀奈米粒子、生物源材料）或改變表面形貌使其不利於細菌附著，可顯著降低微生物性角膜炎的風險。</li>
+</ul>
+</div>
+<div class="lens-content-panel hidden" id="lens-advanced">
+<h4 class="text-lg font-semibold text-gray-700 mb-2">先進功能性塗層</h4>
+<p class="text-gray-600 mb-4">PECVD和電漿聚合是製造耐用、多功能塗層的關鍵技術。</p>
+<ul class="list-disc list-inside space-y-2 text-gray-600">
+<li><strong>NVP/PEGMA 塗層:</strong> 透過PECVD沉積，可提供長達90天的優異親水性和抗污染效果，且生物相容性良好。</li>
+<li><strong>生物源塗層:</strong> 利用天然精油（如天竺葵、香芹酮）進行電漿聚合，可製造出兼具抗菌性和生物相容性的安全塗層。</li>
+<li><strong>藥物釋放:</strong> 電漿處理可調控鏡片表面的藥物負載與釋放動力學，實現治療性隱形眼鏡。</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="bg-white rounded-xl shadow-lg p-6 md:p-8 flex flex-col justify-center">
+<h3 class="text-xl font-bold text-gray-800 mb-2 text-center">處理前後潤濕性對比</h3>
+<p class="text-gray-600 mb-4 text-center text-sm">電漿處理能顯著降低矽水膠鏡片的接觸角，代表其表面從疏水性（不易濕潤）變為親水性（易濕潤）。接觸角越低，潤濕性越好。</p>
+<div class="chart-container">
+<canvas id="wettabilityChart"></canvas>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        const navButtons = document.querySelectorAll('.nav-button');
+        const contentSections = document.querySelectorAll('.content-section');
+        
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                const targetId = button.dataset.target;
+                contentSections.forEach(section => {
+                    if (section.id === targetId) {
+                        section.classList.add('active');
+                    } else {
+                        section.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        const plasmaTechData = {
+            clean: {
+                title: "電漿清潔",
+                desc: "利用氧氣或氬氣電漿，透過氧化或物理濺射，去除表面的有機污染物和微粒，達到原子級潔淨，為後續製程打下完美基礎。"
+            },
+            etch: {
+                title: "電漿蝕刻",
+                desc: "使用反應性氣體（如氟碳化合物）精確地去除材料表層，可用於製作微結構、圖案化或增加表面粗糙度以改善附著力。"
+            },
+            activate: {
+                title: "電漿活化",
+                desc: "在材料表面引入含氧、氮等極性官能基，提高表面能與潤濕性，大幅增強與塗料、膠黏劑的結合力。"
+            },
+            deposit: {
+                title: "電漿沉積/聚合 (PECVD)",
+                desc: "在電漿環境中，利用氣態前驅物反應並在基材表面沉積形成功能性薄膜，如保護層、光學塗層或生物相容層。"
+            }
+        };
+
+        const techBtns = document.querySelectorAll('.tech-btn');
+        const techDisplay = document.getElementById('tech-display');
+        const techTitle = document.getElementById('tech-title');
+        const techDesc = document.getElementById('tech-desc');
+        
+        techBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const techId = btn.dataset.tech;
+                techTitle.textContent = plasmaTechData[techId].title;
+                techDesc.textContent = plasmaTechData[techId].desc;
+                
+                techBtns.forEach(b => b.classList.remove('active', 'bg-teal-600', 'text-white', 'border-teal-600'));
+                btn.classList.add('active', 'bg-teal-600', 'text-white', 'border-teal-600');
+                
+                techTitle.classList.remove('text-teal-700');
+                techTitle.classList.add('text-teal-700');
+            });
+        });
+        techBtns[0].classList.add('active', 'bg-teal-600', 'text-white', 'border-teal-600');
+
+
+        function setupTabSystem(tabSelector, contentSelector) {
+            const tabs = document.querySelectorAll(tabSelector);
+            const contentPanels = document.querySelectorAll(contentSelector);
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    const contentId = tab.dataset.content;
+                    contentPanels.forEach(panel => {
+                        panel.style.display = panel.id === contentId ? 'block' : 'none';
+                    });
+                });
+            });
+            if (tabs.length > 0) {
+               tabs[0].click();
+            }
+        }
+
+        setupTabSystem('.fiber-tab', '.fiber-content-panel');
+        setupTabSystem('.lens-tab', '.lens-content-panel');
+
+        const ctx = document.getElementById('wettabilityChart');
+        if(ctx) {
+            new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['處理前 (疏水)', '電漿處理後 (親水)'],
+                    datasets: [{
+                        label: '接觸角 (度)',
+                        data: [110, 35],
+                        backgroundColor: [
+                            'rgba(239, 68, 68, 0.6)',
+                            'rgba(79, 209, 197, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(79, 209, 197, 1)'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 120,
+                            title: {
+                                display: true,
+                                text: '接觸角 (度) - 越低越親水',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y + '°';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
